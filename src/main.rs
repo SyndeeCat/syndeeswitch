@@ -69,11 +69,9 @@ fn print_help() {
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-
     let mut theme = String::new();
     let mut dir_name = String::new();
 
     parse_cli_args(&args, &mut theme, &mut dir_name);
-
     println!("Chosen theme {} and dir name {}", theme, dir_name);
 }
