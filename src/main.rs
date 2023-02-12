@@ -1,4 +1,6 @@
-use std::{env, process};
+use std::{env, fs, io, process};
+use std::fs::DirEntry;
+use std::path::Path;
 
 enum ArgOption {
     Theme,
@@ -67,6 +69,21 @@ fn print_help() {
     todo!()
 }
 
+fn visit_dirs(dir: &Path, cb: &dyn Fn(&DirEntry)) -> io::Result<()> {
+    if dir.is_dir() {
+        for entry in fs::read_dir(dir)? {
+            let entry = entry?;
+            let path = entry.path();
+            if path.is_dir() {
+                visit_dirs(&path, cb)?;
+            } else {
+                cb(&entry);
+            }
+        }
+    }
+    Ok(())
+}
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     let mut theme = String::new();
@@ -74,4 +91,20 @@ fn main() {
 
     parse_cli_args(&args, &mut theme, &mut dir_name);
     println!("Chosen theme {} and dir name {}", theme, dir_name);
+
+    let path = Path::new(&dir_name);
+    visit_dirs(path, &|entry| {
+        let file_path = entry.path();
+        let os_string = entry.file_name();
+        let file_name = os_string.to_str().unwrap();
+        let format = format!(".{}.", theme);
+        if file_name.contains(format.as_str()) {
+            let dest_file_name = file_name.replace(format.as_str(), ".");
+            let parent_path = file_path.parent().unwrap();
+            let destination = parent_path.join(dest_file_name);
+            fs::copy(file_path, destination);
+        }
+    }).expect("Something sent wrong while processing");
+
+    println!("Successful!");
 }
