@@ -97,9 +97,9 @@ fn main() {
         let file_path = entry.path();
         let os_string = entry.file_name();
         let file_name = os_string.to_str().unwrap();
-        let format = format!(".{}.", theme);
+        let format = format!(".{}", theme);
         if file_name.contains(format.as_str()) {
-            let dest_file_name = file_name.replace(format.as_str(), ".");
+            let dest_file_name = file_name.replace(format.as_str(), "");
             let parent_path = file_path.parent().unwrap();
             let destination = parent_path.join(dest_file_name);
             fs::copy(file_path, destination);
