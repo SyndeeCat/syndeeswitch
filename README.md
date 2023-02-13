@@ -1,5 +1,5 @@
 # syndeeswitch
-Theme switcher for linux. It copies file content from *.{--theme}* to *.* located in {--dir}.
+Theme switcher for linux. It copies file content from `*.{--theme}*` to `*.*` located in `{--dir}`.
 
 ## Usage:
 ```bash
